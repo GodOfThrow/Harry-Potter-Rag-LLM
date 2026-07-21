@@ -135,7 +135,7 @@ Based on the provided text, the first password to the Gryffindor common room was
 
 | Component | Technology |
 |-----------|-----------|
-| LLM | Google Gemini 2.0 Flash |
+| LLM | Google Gemini 2.5 Flash |
 | Agent Framework | LangGraph (ReAct) |
 | Embeddings | sentence-transformers/all-MiniLM-L6-v2 |
 | Vector Store | FAISS (local) |
