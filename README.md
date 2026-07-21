@@ -69,11 +69,66 @@ python main.py
 
 ## 💬 Example Usage
 
-```
-You: Who is Harry Potter?
-You: What is Hogwarts?
-You: Describe the relationship between Harry and Voldemort
-You: quit
+```text
+You: How many presents did Dudley Dursley receive on his birthday?
+
+────────────────────────────────────────────────────────────
+📚  [Agent 1] Data Retriever — Searching knowledge base...
+────────────────────────────────────────────────────────────
+
+   [Retriever] Searching for: 'How many presents did Dudley Dursley receive on his birthday?'
+   [Tool] Loading FAISS index from disk...
+   [Tool] FAISS index loaded ✅
+   [Retriever] Retrieved 1 characters of context
+
+────────────────────────────────────────────────────────────
+✍️   [Agent 2] Report Generator — Synthesizing answer...
+────────────────────────────────────────────────────────────
+
+════════════════════════════════════════════════════════════
+🤖  Final Answer:
+════════════════════════════════════════════════════════════
+On his birthday, Dudley Dursley received thirty-seven presents. He initially counted thirty-six, but his mother reminded him that he hadn't included "Auntie Marge's present," which brought the total to thirty-seven. The table was "almost hidden beneath all Dudley's birthday presents," which included a new computer, a second television, and a racing bike.
+
+You: Why did Harry and Ron become friends with Hermione after Halloween?
+
+────────────────────────────────────────────────────────────
+📚  [Agent 1] Data Retriever — Searching knowledge base...
+────────────────────────────────────────────────────────────
+
+   [Retriever] Searching for: 'Why did Harry and Ron become friends with Hermione after Halloween?'
+   [Retriever] Retrieved 1 characters of context
+
+────────────────────────────────────────────────────────────
+✍️   [Agent 2] Report Generator — Synthesizing answer...
+────────────────────────────────────────────────────────────
+
+════════════════════════════════════════════════════════════
+🤖  Final Answer:
+════════════════════════════════════════════════════════════
+Harry and Ron became friends with Hermione after Halloween because they "saved her from the mountain troll."
+
+Before this event, their relationship was strained. Ron openly expressed his dislike for Hermione, calling her a "nightmare" and stating that "no one can stand her" (Passage 5). Hermione, described as a "bossy know-it-all," had been refusing to speak to them (Passage 4, Passage 2). Ron's harsh comments led Hermione to be found crying in the girls' bathroom on Halloween (Passage 5, Passage 1).
+
+However, after Harry and Ron saved her from the mountain troll, Hermione's demeanor changed significantly. She "had become a bit more relaxed about breaking rules... and she was much nicer for it" (Passage 3). This pivotal event transformed their dynamic, leading to the formation of their friendship. The passages indicate that this change occurred around Halloween, as the positive shift in Hermione's behavior is noted before Harry's first Quidditch match, which would have taken place after the Halloween feast.
+
+You: What was the first password to the Gryffindor common room?
+
+────────────────────────────────────────────────────────────
+📚  [Agent 1] Data Retriever — Searching knowledge base...
+────────────────────────────────────────────────────────────
+
+   [Retriever] Searching for: 'What was the first password to the Gryffindor common room?'
+   [Retriever] Retrieved 1 characters of context
+
+────────────────────────────────────────────────────────────
+✍️   [Agent 2] Report Generator — Synthesizing answer...
+────────────────────────────────────────────────────────────
+
+════════════════════════════════════════════════════════════
+🤖  Final Answer:
+════════════════════════════════════════════════════════════
+Based on the provided text, the first password to the Gryffindor common room was "Caput Draconis." Percy Weasley provided this password, causing the portrait to swing open and reveal the entrance to the common room.
 ```
 
 ## 🛠️ Tech Stack
