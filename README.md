@@ -104,59 +104,64 @@ Only two steps — **no code changes needed**:
 
 The system auto-detects **Azure vs regular OpenAI** based on whether `OPENAI_ENDPOINT` is set.
 
-## 💬 Example Output From Google Gemini 2.5 Flash
+## 💬 Example Output
+
+### 🔴 Google Gemini 2.5 Flash
 
 ```text
 You: How many presents did Dudley Dursley receive on his birthday?
 
-────────────────────────────────────────────────────────────
-📚  [Agent 1] Data Retriever — Searching knowledge base...
-────────────────────────────────────────────────────────────
-
-   [LLM] OpenAI | model: gpt-4o-mini
-   [Retriever] Searching for: 'How many presents did Dudley Dursley receive on his birthday?'
-   [Tool] Loading FAISS index from disk...
-   [Tool] FAISS index loaded ✅
-   [Retriever] Retrieved 1 characters of context
-
-────────────────────────────────────────────────────────────
-✍️   [Agent 2] Report Generator — Synthesizing answer...
-────────────────────────────────────────────────────────────
-
 ════════════════════════════════════════════════════════════
 🤖  Final Answer:
 ════════════════════════════════════════════════════════════
-On his birthday, Dudley Dursley received thirty-seven presents. He initially
-counted thirty-six, but his mother reminded him that he hadn't included
-"Auntie Marge's present," which brought the total to thirty-seven. The table
-was "almost hidden beneath all Dudley's birthday presents," which included a
-new computer, a second television, and a racing bike.
+On his birthday, Dudley Dursley initially counted thirty-six presents. However, his mother then reminded him about "Auntie Marge's present," which was hidden "under this big one from Mommy and Daddy." After this was pointed out, Dudley acknowledged the additional gift, stating, "All right, thirty-seven then." Therefore, Dudley received a total of thirty-seven presents.
 
 You: Why did Harry and Ron become friends with Hermione after Halloween?
 
 ════════════════════════════════════════════════════════════
 🤖  Final Answer:
 ════════════════════════════════════════════════════════════
-Harry and Ron became friends with Hermione after Halloween because they
-"saved her from the mountain troll."
+On Halloween, Hermione was deeply upset and crying in the girls' bathroom after overhearing Ron's harsh comments, where he called her a "nightmare" and suggested "she's got no friends" (Passages 1, 5). Harry even caught a glimpse of her face and was "startled to see that she was in tears" (Passage 5).
 
-Before this event, their relationship was strained. Ron openly expressed his
-dislike for Hermione, calling her a "nightmare" and stating that "no one can
-stand her." Ron's harsh comments led Hermione to be found crying in the girls'
-bathroom on Halloween.
+However, Harry and Ron became friends with Hermione after this initial period of animosity. The provided passages indicate that this significant shift in their relationship occurred "since Harry and Ron had saved her from the mountain troll" (Passage 3). Following this event, Hermione's demeanor changed considerably; she "had become a bit more relaxed about breaking rules... and she was much nicer for it" (Passage 3). An example of her changed behavior and their newfound camaraderie is her conjuring a bright blue, portable fire for them in a jam jar during a break (Passage 3).
 
-However, after Harry and Ron saved her from the mountain troll, Hermione's
-demeanor changed significantly. She "had become a bit more relaxed about
-breaking rules... and she was much nicer for it."
+The provided passages do not explicitly detail the mountain troll incident itself or state its precise timing relative to the Halloween feast, only that the friendship developed *since* Harry and Ron saved her from the troll.
 
 You: What was the first password to the Gryffindor common room?
 
 ════════════════════════════════════════════════════════════
 🤖  Final Answer:
 ════════════════════════════════════════════════════════════
-The first password to the Gryffindor common room was "Caput Draconis."
-Percy Weasley provided this password, causing the portrait to swing open
-and reveal the entrance to the common room.
+The first password to the Gryffindor common room, as stated in the provided text, was "Caput Draconis." Percy Weasley provided this password, causing the portrait to swing open and reveal the entrance to the common room.
+```
+
+### 🔵 OpenAI (gpt-5-mini / gpt-4o-mini)
+
+```text
+You: How many presents did Dudley Dursley receive on his birthday?
+
+════════════════════════════════════════════════════════════
+🤖  Final Answer:
+════════════════════════════════════════════════════════════
+Dudley received thirty-seven presents. In the passage he first says "Thirty-six," then, after his mother points out Auntie Marge's gift, he corrects himself: "All right, thirty-seven then."
+
+You: Why did Harry and Ron become friends with Hermione after Halloween?
+
+════════════════════════════════════════════════════════════
+🤖  Final Answer:
+════════════════════════════════════════════════════════════
+They became friends because of the shared, life‑threatening experience of saving Hermione from the mountain troll on Halloween. As the text puts it, "But from that moment on, Hermione Granger became their friend. There are some things you can't share without ending up liking each other, and knocking out a twelve-foot mountain troll is one of them." The three of them had to work together under extreme danger (Ron casting "Wingardium Leviosa" to disarm the troll, Harry distracting and holding on to it), and that adrenaline‑filled, loyal rescue forged an immediate bond.
+
+The passages also show Hermione defending Harry and Ron afterward — she hung her head and even pretended she had tackled the troll to get them out of trouble — which likely strengthened their mutual trust. Finally, the books note Hermione "had become a bit more relaxed about breaking rules since Harry and Ron had saved her... and she was much nicer for it," signaling a change in their relationship after the incident.
+
+If you want more about how their friendship developed later, the provided passages stop here and don’t give further detail.
+
+You: What was the first password to the Gryffindor common room?
+
+════════════════════════════════════════════════════════════
+🤖  Final Answer:
+════════════════════════════════════════════════════════════
+The passage shows the password being spoken aloud: when asked "Password?" Percy answers, "Caput Draconis." The portrait then swings forward and they enter the Gryffindor common room.
 ```
 
 ## 🛠️ Tech Stack
