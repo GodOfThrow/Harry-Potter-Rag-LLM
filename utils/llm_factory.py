@@ -2,7 +2,7 @@
 llm_factory.py
 --------------
 สร้าง LLM object ตาม LLM_PROVIDER ใน .env
-รองรับ: OpenAI, Azure OpenAI (auto-detect), Google Gemini
+รองรับ: OpenAI, Azure OpenAI, Azure APIM, Google Gemini
 """
 
 import os
@@ -25,15 +25,16 @@ def get_llm(temperature: float = 0):
     """
     คืน LangChain LLM object ตาม LLM_PROVIDER ที่ตั้งใน .env
 
-    OpenAI ปกติ:  LLM_PROVIDER=openai, เว้น OPENAI_ENDPOINT ว่าง
-    Azure OpenAI: LLM_PROVIDER=openai, ใส่ OPENAI_ENDPOINT
-    Google Gemini: LLM_PROVIDER=google
+    - openai + ENDPOINT (.openai.azure.com) → AzureChatOpenAI
+    - openai + ENDPOINT (APIM/อื่นๆ)        → ChatOpenAI + base_url
+    - openai + ไม่มี ENDPOINT              → ChatOpenAI (OpenAI ปกติ)
+    - google                               → ChatGoogleGenerativeAI
     """
     provider = LLM_PROVIDER.lower().strip()
 
-    # ── OpenAI / Azure OpenAI ────────────────────────────────────────────────
+    # ── OpenAI / Azure / APIM ────────────────────────────────────────────────
     if provider == "openai":
-        from langchain_openai import AzureChatOpenAI, ChatOpenAI
+        from langchain_openai import ChatOpenAI
 
         if not OPENAI_SUBSCRIPTION_KEY:
             raise ValueError(
@@ -41,24 +42,51 @@ def get_llm(temperature: float = 0):
                 "ใส่ key แล้วลองใหม่อีกครั้ง"
             )
 
-        # Azure OpenAI — ใช้ ChatOpenAI แบบ v1 API (สำหรับ GPT-5)
         if OPENAI_ENDPOINT:
-            print(f"   [LLM] Azure OpenAI (v1 API) | deployment: {OPENAI_DEPLOYMENT}")
-            # แปลง Endpoint ให้เป็นรูปแบบ v1
-            base_url = OPENAI_ENDPOINT.strip().rstrip('"').rstrip("'").rstrip('/')
-            v1_endpoint = f"{base_url}/openai/v1"
-            
-            from langchain_openai import ChatOpenAI
-            return ChatOpenAI(
-                model=OPENAI_DEPLOYMENT,  # ใช้ชื่อ Deployment แทน Model
-                api_key=OPENAI_SUBSCRIPTION_KEY.strip(),
-                base_url=v1_endpoint,
-                temperature=temperature,
-                default_headers={"api-key": OPENAI_SUBSCRIPTION_KEY.strip()}
-            )
+            endpoint = OPENAI_ENDPOINT.rstrip("/")
 
-        # OpenAI ปกติ
-        print(f"   [LLM] OpenAI | model: {OPENAI_MODEL_NAME}")
+            # ── Standard Azure OpenAI (.openai.azure.com) ────────────────────
+            if ".openai.azure.com" in endpoint:
+                from langchain_openai import AzureChatOpenAI
+                # print(f"   [LLM] Azure OpenAI | deployment: {OPENAI_DEPLOYMENT}")
+                return AzureChatOpenAI(
+                    azure_endpoint=endpoint,
+                    azure_deployment=OPENAI_DEPLOYMENT,
+                    api_key=OPENAI_SUBSCRIPTION_KEY,
+                    api_version="2024-08-01-preview",
+                    temperature=temperature,
+                )
+
+            # ── Azure APIM / Custom Endpoint → ใช้ /chat/completions ─────────
+            else:
+                import httpx
+
+                base_url = endpoint
+                for suffix in ["/responses", "/chat/completions", "/completions", "/v1"]:
+                    if base_url.endswith(suffix):
+                        base_url = base_url[: -len(suffix)]
+                        break
+
+                # ใช้ event hook — inject api-key header ทุก request
+                _key = OPENAI_SUBSCRIPTION_KEY
+                def _inject_apim_key(request: httpx.Request) -> None:
+                    request.headers["api-key"] = _key
+
+                http_client = httpx.Client(
+                    event_hooks={"request": [_inject_apim_key]}
+                )
+
+                # print(f"   [LLM] Azure APIM | base_url: {base_url} | model: {OPENAI_DEPLOYMENT}")
+                return ChatOpenAI(
+                    model=OPENAI_DEPLOYMENT,
+                    api_key=OPENAI_SUBSCRIPTION_KEY,
+                    base_url=base_url,
+                    temperature=temperature,
+                    http_client=http_client,
+                )
+
+        # ── OpenAI ปกติ (ไม่มี endpoint) ────────────────────────────────────
+        # print(f"   [LLM] OpenAI | model: {OPENAI_MODEL_NAME}")
         return ChatOpenAI(
             model=OPENAI_MODEL_NAME,
             api_key=OPENAI_SUBSCRIPTION_KEY,
@@ -75,7 +103,7 @@ def get_llm(temperature: float = 0):
                 "รับ key ได้ที่: https://aistudio.google.com/app/apikey"
             )
 
-        print(f"   [LLM] Google Gemini | model: {GOOGLE_MODEL_NAME}")
+        # print(f"   [LLM] Google Gemini | model: {GOOGLE_MODEL_NAME}")
         return ChatGoogleGenerativeAI(
             model=GOOGLE_MODEL_NAME,
             google_api_key=GOOGLE_API_KEY,

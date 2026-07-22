@@ -44,7 +44,7 @@ def create_data_retriever() -> RunnableLambda:
     def _invoke(inputs: dict) -> dict:
         """Wrapper: invoke({"input": query}) -> {"output": passages}"""
         query = inputs["input"]
-        print(f"\n   [Retriever] Searching for: {query!r}")
+        # print(f"\n   [Retriever] Searching for: {query!r}")
 
         result = agent.invoke({
             "messages": [HumanMessage(content=query)]
@@ -52,7 +52,7 @@ def create_data_retriever() -> RunnableLambda:
 
         last_message = result["messages"][-1]
         output = last_message.content
-        print(f"   [Retriever] Retrieved {len(output)} characters of context")
+        # print(f"   [Retriever] Retrieved {len(output)} characters of context")
         return {"output": output}
 
     return RunnableLambda(_invoke)

@@ -2,6 +2,7 @@
 .env
 *.env
 .env.*
+test_apim.py
 
 # ── FAISS Index (ไฟล์ใหญ่ ไม่จำเป็นต้อง commit — build ใหม่ได้จาก build_index.py) ──
 knowledge_base/

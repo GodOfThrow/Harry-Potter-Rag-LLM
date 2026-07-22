@@ -32,7 +32,7 @@ def _get_vectorstore() -> FAISS:
                 "Please run: python utils/build_index.py"
             )
 
-        print("   [Tool] Loading FAISS index from disk...")
+        # print("   [Tool] Loading FAISS index from disk...")
         _embeddings = HuggingFaceEmbeddings(
             model_name=EMBEDDING_MODEL,
             model_kwargs={"device": "cpu"},
@@ -43,7 +43,7 @@ def _get_vectorstore() -> FAISS:
             _embeddings,
             allow_dangerous_deserialization=True,
         )
-        print("   [Tool] FAISS index loaded ✅")
+        # print("   [Tool] FAISS index loaded ✅")
 
     return _vectorstore
 

@@ -8,6 +8,7 @@ Harry Potter RAG System — CLI Entry Point
 
 import os
 import sys
+import traceback
 
 # Fix Windows terminal UTF-8 encoding (for emoji/unicode output)
 if hasattr(sys.stdout, 'reconfigure'):
@@ -94,17 +95,17 @@ def run_pipeline(query: str) -> str:
     for attempt in range(1, MAX_RETRIES + 1):
         try:
             # ── Agent 1: Data Retriever ──────────────────────────────────────
-            print("\n" + "─" * 60)
-            print("📚  [Agent 1] Data Retriever — Searching knowledge base...")
-            print("─" * 60)
+            # print("\n" + "─" * 60)
+            # print("📚  [Agent 1] Data Retriever — Searching knowledge base...")
+            # print("─" * 60)
 
             retriever_result = data_retriever.invoke({"input": query})
             context = retriever_result.get("output", "No relevant passages found.")
 
             # ── Agent 2: Report Generator ────────────────────────────────────
-            print("\n" + "─" * 60)
-            print("✍️   [Agent 2] Report Generator — Synthesizing answer...")
-            print("─" * 60)
+            # print("\n" + "─" * 60)
+            # print("✍️   [Agent 2] Report Generator — Synthesizing answer...")
+            # print("─" * 60)
 
             final_answer = report_generator.invoke({"query": query, "context": context})
             return final_answer
@@ -169,7 +170,9 @@ def main():
             print("\n\n👋 Goodbye!")
             break
         except Exception as e:
-            print(f"\n❌ Error: {e}\n")
+            print(f"\n❌ Error: {e}")
+            traceback.print_exc()
+            print()
 
 
 if __name__ == "__main__":
