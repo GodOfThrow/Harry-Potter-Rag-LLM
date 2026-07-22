@@ -63,6 +63,7 @@ LLM_PROVIDER=google
 GOOGLE_API_KEY=your_google_api_key_here
 GOOGLE_MODEL_NAME=gemini-2.5-flash
 ```
+> Get your Gemini key at: https://aistudio.google.com/app/apikey
 
 #### 🔷 OpenAI
 ```env
@@ -72,7 +73,6 @@ OPENAI_MODEL_NAME=gpt-5-mini
 OPENAI_DEPLOYMENT=gpt-5-mini
 OPENAI_SUBSCRIPTION_KEY=your_azure_subscription_key
 ```
-> Get your Gemini key at: https://aistudio.google.com/app/apikey
 
 ### 3. Build the knowledge base index
 ```bash
