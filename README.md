@@ -79,7 +79,7 @@ OPENAI_SUBSCRIPTION_KEY=your_azure_subscription_key
 ```env
 LLM_PROVIDER=google
 GOOGLE_API_KEY=your_google_api_key_here
-GOOGLE_MODEL_NAME=gemini-2.0-flash
+GOOGLE_MODEL_NAME=gemini-2.5-flash
 ```
 > Get your Gemini key at: https://aistudio.google.com/app/apikey
 
@@ -104,7 +104,7 @@ Only two steps — **no code changes needed**:
 
 The system auto-detects **Azure vs regular OpenAI** based on whether `OPENAI_ENDPOINT` is set.
 
-## 💬 Example Output
+## 💬 Example Output From Google Gemini 2.5 Flash
 
 ```text
 You: How many presents did Dudley Dursley receive on his birthday?
@@ -163,8 +163,8 @@ and reveal the entrance to the common room.
 
 | Component | Technology |
 |-----------|-----------|
-| LLM (default) | OpenAI GPT-4o-mini |
-| LLM (alternative) | Google Gemini 2.0 Flash |
+| LLM (default) | Google Gemini 2.5 Flash |
+| LLM (alternative) | OpenAI GPT-5-mini |
 | LLM (alternative) | Azure OpenAI |
 | Agent Framework | LangGraph (ReAct) |
 | LLM Orchestration | LangChain LCEL |
