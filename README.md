@@ -126,7 +126,7 @@ You: What was the first password to the Gryffindor common room?
 The first password to the Gryffindor common room, as stated in the provided text, was "Caput Draconis." Percy Weasley provided this password, causing the portrait to swing open and reveal the entrance to the common room.
 ```
 
-### 🔵 OpenAI (gpt-5-mini / gpt-4o-mini)
+### 🔵 OpenAI (gpt-5-mini)
 
 ```text
 You: How many presents did Dudley Dursley receive on his birthday?
