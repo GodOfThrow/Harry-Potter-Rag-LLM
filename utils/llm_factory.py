@@ -1,8 +1,8 @@
 """
 llm_factory.py
 --------------
-LLM Factory — สลับ provider ได้แค่เปลี่ยน .env
-รองรับ: Google Gemini, OpenAI, OpenAI-compatible (Groq/Together/etc.), Anthropic, Ollama
+สร้าง LLM object ตาม LLM_PROVIDER ใน .env
+รองรับ: OpenAI, Azure OpenAI (auto-detect), Google Gemini
 """
 
 import os
@@ -12,85 +12,78 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config import (
     LLM_PROVIDER,
-    LLM_MODEL,
+    OPENAI_ENDPOINT,
+    OPENAI_MODEL_NAME,
+    OPENAI_DEPLOYMENT,
+    OPENAI_SUBSCRIPTION_KEY,
     GOOGLE_API_KEY,
-    OPENAI_API_KEY,
-    OPENAI_BASE_URL,
-    ANTHROPIC_API_KEY,
-    OLLAMA_BASE_URL,
+    GOOGLE_MODEL_NAME,
 )
 
 
 def get_llm(temperature: float = 0):
     """
-    Factory function — คืน LangChain LLM object ตาม LLM_PROVIDER ใน .env
+    คืน LangChain LLM object ตาม LLM_PROVIDER ที่ตั้งใน .env
 
-    ตัวอย่างการใช้:
-        llm = get_llm(temperature=0)        # for retriever (deterministic)
-        llm = get_llm(temperature=0.3)      # for generator (slightly creative)
+    OpenAI ปกติ:  LLM_PROVIDER=openai, เว้น OPENAI_ENDPOINT ว่าง
+    Azure OpenAI: LLM_PROVIDER=openai, ใส่ OPENAI_ENDPOINT
+    Google Gemini: LLM_PROVIDER=google
     """
     provider = LLM_PROVIDER.lower().strip()
 
+    # ── OpenAI / Azure OpenAI ────────────────────────────────────────────────
+    if provider == "openai":
+        from langchain_openai import AzureChatOpenAI, ChatOpenAI
+
+        if not OPENAI_SUBSCRIPTION_KEY:
+            raise ValueError(
+                "OPENAI_SUBSCRIPTION_KEY ยังไม่ได้ตั้งค่าใน .env\n"
+                "ใส่ key แล้วลองใหม่อีกครั้ง"
+            )
+
+        # Azure OpenAI — ใช้ ChatOpenAI แบบ v1 API (สำหรับ GPT-5)
+        if OPENAI_ENDPOINT:
+            print(f"   [LLM] Azure OpenAI (v1 API) | deployment: {OPENAI_DEPLOYMENT}")
+            # แปลง Endpoint ให้เป็นรูปแบบ v1
+            base_url = OPENAI_ENDPOINT.strip().rstrip('"').rstrip("'").rstrip('/')
+            v1_endpoint = f"{base_url}/openai/v1"
+            
+            from langchain_openai import ChatOpenAI
+            return ChatOpenAI(
+                model=OPENAI_DEPLOYMENT,  # ใช้ชื่อ Deployment แทน Model
+                api_key=OPENAI_SUBSCRIPTION_KEY.strip(),
+                base_url=v1_endpoint,
+                temperature=temperature,
+                default_headers={"api-key": OPENAI_SUBSCRIPTION_KEY.strip()}
+            )
+
+        # OpenAI ปกติ
+        print(f"   [LLM] OpenAI | model: {OPENAI_MODEL_NAME}")
+        return ChatOpenAI(
+            model=OPENAI_MODEL_NAME,
+            api_key=OPENAI_SUBSCRIPTION_KEY,
+            temperature=temperature,
+        )
+
     # ── Google Gemini ────────────────────────────────────────────────────────
-    if provider == "google":
+    elif provider == "google":
         from langchain_google_genai import ChatGoogleGenerativeAI
+
         if not GOOGLE_API_KEY:
-            raise ValueError("GOOGLE_API_KEY ไม่ได้ตั้งค่าใน .env")
+            raise ValueError(
+                "GOOGLE_API_KEY ยังไม่ได้ตั้งค่าใน .env\n"
+                "รับ key ได้ที่: https://aistudio.google.com/app/apikey"
+            )
+
+        print(f"   [LLM] Google Gemini | model: {GOOGLE_MODEL_NAME}")
         return ChatGoogleGenerativeAI(
-            model=LLM_MODEL,
+            model=GOOGLE_MODEL_NAME,
             google_api_key=GOOGLE_API_KEY,
             temperature=temperature,
         )
 
-    # ── OpenAI (official) ────────────────────────────────────────────────────
-    elif provider == "openai":
-        from langchain_openai import ChatOpenAI
-        if not OPENAI_API_KEY:
-            raise ValueError("OPENAI_API_KEY ไม่ได้ตั้งค่าใน .env")
-        return ChatOpenAI(
-            model=LLM_MODEL,
-            api_key=OPENAI_API_KEY,
-            temperature=temperature,
-        )
-
-    # ── OpenAI-Compatible endpoint (Groq, Together AI, OpenRouter, LM Studio ฯลฯ) ──
-    # ใช้ OpenAI SDK แต่เปลี่ยน base_url → ทำงานกับ API ที่ compatible กับ OpenAI
-    elif provider == "openai-compatible":
-        from langchain_openai import ChatOpenAI
-        if not OPENAI_API_KEY:
-            raise ValueError("OPENAI_API_KEY ไม่ได้ตั้งค่าใน .env (ใส่ key ของ provider นั้น)")
-        if not OPENAI_BASE_URL:
-            raise ValueError("OPENAI_BASE_URL ไม่ได้ตั้งค่าใน .env (เช่น https://api.groq.com/openai/v1)")
-        return ChatOpenAI(
-            model=LLM_MODEL,
-            api_key=OPENAI_API_KEY,
-            base_url=OPENAI_BASE_URL,
-            temperature=temperature,
-        )
-
-    # ── Anthropic Claude ─────────────────────────────────────────────────────
-    elif provider == "anthropic":
-        from langchain_anthropic import ChatAnthropic
-        if not ANTHROPIC_API_KEY:
-            raise ValueError("ANTHROPIC_API_KEY ไม่ได้ตั้งค่าใน .env")
-        return ChatAnthropic(
-            model=LLM_MODEL,
-            api_key=ANTHROPIC_API_KEY,
-            temperature=temperature,
-        )
-
-    # ── Ollama (Local) ───────────────────────────────────────────────────────
-    elif provider == "ollama":
-        from langchain_ollama import ChatOllama
-        return ChatOllama(
-            model=LLM_MODEL,
-            base_url=OLLAMA_BASE_URL or "http://localhost:11434",
-            temperature=temperature,
-        )
-
     else:
-        supported = ["google", "openai", "openai-compatible", "anthropic", "ollama"]
         raise ValueError(
-            f"LLM_PROVIDER '{provider}' ไม่รองรับ\n"
-            f"ค่าที่ใช้ได้: {supported}"
+            f"LLM_PROVIDER='{provider}' ไม่รองรับ\n"
+            f"ค่าที่ใช้ได้: 'openai' หรือ 'google'"
         )

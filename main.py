@@ -18,12 +18,17 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ตรวจ API Key ก่อนเริ่ม
-from config import GOOGLE_API_KEY, KNOWLEDGE_BASE_PATH
+from config import (
+    LLM_PROVIDER,
+    GOOGLE_API_KEY,
+    OPENAI_SUBSCRIPTION_KEY,
+    KNOWLEDGE_BASE_PATH,
+)
 
 BANNER = """
 ╔══════════════════════════════════════════════════════════╗
 ║         🧙  Harry Potter RAG System  🧙                  ║
-║   Powered by LangChain + Gemini + Semantic Search        ║
+║   Powered by LangChain + LangGraph + Semantic Search     ║
 ╚══════════════════════════════════════════════════════════╝
 """
 
@@ -36,12 +41,29 @@ Commands:
 
 
 def check_api_key():
-    """ตรวจสอบว่ามี API Key หรือไม่"""
-    if not GOOGLE_API_KEY or GOOGLE_API_KEY == "your_google_api_key_here":
-        print("❌ ERROR: GOOGLE_API_KEY not set!")
-        print("   Please edit the .env file and add your Google API key:")
-        print("   GOOGLE_API_KEY=your_actual_key_here")
+    """ตรวจสอบว่ามี API Key หรือไม่ โดยเช็คตาม LLM_PROVIDER ที่เลือกไว้"""
+    provider = LLM_PROVIDER.lower().strip()
+
+    if provider == "openai":
+        if not OPENAI_SUBSCRIPTION_KEY:
+            print(f"❌ ERROR: OPENAI_SUBSCRIPTION_KEY not set!")
+            print(f"   LLM_PROVIDER=openai แต่ยังไม่ได้ใส่ key ใน .env")
+            print(f"   OPENAI_SUBSCRIPTION_KEY=sk-xxxxxxxxxxxxxxxx")
+            sys.exit(1)
+
+    elif provider == "google":
+        if not GOOGLE_API_KEY:
+            print(f"❌ ERROR: GOOGLE_API_KEY not set!")
+            print(f"   LLM_PROVIDER=google แต่ยังไม่ได้ใส่ key ใน .env")
+            print(f"   GOOGLE_API_KEY=your_actual_key_here")
+            sys.exit(1)
+
+    else:
+        print(f"❌ ERROR: LLM_PROVIDER='{provider}' ไม่รองรับ")
+        print(f"   ค่าที่ใช้ได้: 'openai' หรือ 'google'")
         sys.exit(1)
+
+    print(f"   [Provider] Using: {provider.upper()} ✅")
 
 
 def check_and_build_index():
