@@ -61,8 +61,8 @@ Create a `.env` file in the project root and choose your provider:
 ```env
 LLM_PROVIDER=openai
 OPENAI_ENDPOINT=
-OPENAI_MODEL_NAME=gpt-4o-mini
-OPENAI_DEPLOYMENT=gpt-4o-mini
+OPENAI_MODEL_NAME=gpt-5-mini
+OPENAI_DEPLOYMENT=gpt-5-mini
 OPENAI_SUBSCRIPTION_KEY=sk-xxxxxxxxxxxxxxxx
 ```
 
@@ -70,8 +70,8 @@ OPENAI_SUBSCRIPTION_KEY=sk-xxxxxxxxxxxxxxxx
 ```env
 LLM_PROVIDER=openai
 OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-OPENAI_MODEL_NAME=gpt-4o-mini
-OPENAI_DEPLOYMENT=gpt-4o-mini
+OPENAI_MODEL_NAME=gpt-5-mini
+OPENAI_DEPLOYMENT=gpt-5-mini
 OPENAI_SUBSCRIPTION_KEY=your_azure_subscription_key
 ```
 
