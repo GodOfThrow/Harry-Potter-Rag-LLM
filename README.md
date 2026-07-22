@@ -57,29 +57,20 @@ pip install -r requirements.txt
 
 Create a `.env` file in the project root and choose your provider:
 
-#### 🔵 OpenAI (default)
+#### 🔴 Google Gemini (default)
 ```env
-LLM_PROVIDER=openai
-OPENAI_ENDPOINT=
-OPENAI_MODEL_NAME=gpt-5-mini
-OPENAI_DEPLOYMENT=gpt-5-mini
-OPENAI_SUBSCRIPTION_KEY=sk-xxxxxxxxxxxxxxxx
+LLM_PROVIDER=google
+GOOGLE_API_KEY=your_google_api_key_here
+GOOGLE_MODEL_NAME=gemini-2.5-flash
 ```
 
-#### 🔷 Azure OpenAI
+#### 🔷 OpenAI
 ```env
 LLM_PROVIDER=openai
 OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 OPENAI_MODEL_NAME=gpt-5-mini
 OPENAI_DEPLOYMENT=gpt-5-mini
 OPENAI_SUBSCRIPTION_KEY=your_azure_subscription_key
-```
-
-#### 🔴 Google Gemini
-```env
-LLM_PROVIDER=google
-GOOGLE_API_KEY=your_google_api_key_here
-GOOGLE_MODEL_NAME=gemini-2.5-flash
 ```
 > Get your Gemini key at: https://aistudio.google.com/app/apikey
 
@@ -170,7 +161,6 @@ The passage shows the password being spoken aloud: when asked "Password?" Percy 
 |-----------|-----------|
 | LLM (default) | Google Gemini 2.5 Flash |
 | LLM (alternative) | OpenAI GPT-5-mini |
-| LLM (alternative) | Azure OpenAI |
 | Agent Framework | LangGraph (ReAct) |
 | LLM Orchestration | LangChain LCEL |
 | Embeddings | sentence-transformers/all-MiniLM-L6-v2 (local) |
